@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // เชื่อมต่อ MongoDB
-mongoose.connect('mongodb://localhost:27017/CppfinalNewDEMO', {
+mongoose.connect('mongodb+srv://myfewisme:cpp1234@cluster0.vco8v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -242,39 +242,6 @@ app.get('/roomcode/:roomCode', async (req, res) => {
     }
 });
 
-// ดึง RoomCode ตามเงื่อนไข
-app.get('/filter-roomcodes', async (req, res) => {
-    const { level, minScore } = req.query;
-
-    try {
-        const query = {};
-        if (level) query['selectedQuestions.level'] = Number(level);
-        if (minScore) query.totalScore = { $gte: Number(minScore) };
-
-        const rooms = await RoomCode.find(query);
-        res.json(rooms);
-    } catch (error) {
-        console.error('Error filtering room codes:', error);
-        res.status(500).send('Error filtering room codes');
-    }
-});
-
-// ดึงคำถามเดี่ยวโดยไอดี
-app.get('/quiz/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const quiz = await Quiz.findById(id);
-        if (!quiz) {
-            return res.status(404).send('Quiz not found');
-        }
-        res.json(quiz);
-    } catch (error) {
-        console.error('Error fetching quiz:', error);
-        res.status(500).send('Error fetching quiz');
-    }
-});
-
 // เส้นทางสำหรับบันทึกคะแนนผู้เล่น
 app.post('/save-score', async (req, res) => {
     const { name, score, username, roomCode, datePlayed, uniqueIdentifier } = req.body;
@@ -425,6 +392,35 @@ app.post('/reset-password', async (req, res) => {
 
     // ค้นหาผู้ใช้ในฐานข้อมูล
     const user = await User.findOne({ username, password: oldPassword, type });
+    if (!user) {
+        return res.status(400).send('Invalid type, username or old password');
+    }
+
+    // อัปเดตรหัสผ่านใหม่
+    user.password = newPassword;
+    await user.save();
+
+    // ลบ OTP ที่หมดอายุ
+    await OTP.deleteOne({ username, otp: otpCode });
+
+    res.status(200).send('Password reset successful!');
+});
+
+app.post('/reset-password2', async (req, res) => {
+    const { username, email, newPassword, otpCode, type  } = req.body;
+
+    if (!username || !email || !newPassword || !otpCode || !type) {
+        return res.status(400).send('Please provide all fields: username, email, newPassword, OTP, and type');
+    }
+
+    // ตรวจสอบ OTP
+    const otpDoc = await OTP.findOne({ username, otp: otpCode });
+    if (!otpDoc || otpDoc.expiresAt < new Date()) {
+        return res.status(400).send('Invalid or expired OTP');
+    }
+
+    // ค้นหาผู้ใช้ในฐานข้อมูล
+    const user = await User.findOne({ username, email, type });
     if (!user) {
         return res.status(400).send('Invalid type, username or old password');
     }

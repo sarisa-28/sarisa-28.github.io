@@ -115,26 +115,117 @@ h2 {
         }
 
         .puzzle-piece {
-            width: 120px;
-            height: 120px;
-            margin: 10px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+    /* กำหนดรูปทรง */
+    width: 200px;
+    height: 160px;
+    margin: 15px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    clip-path: polygon(
+        50% 10%, 67% 35%, 92% 40%, 70% 58%,
+        78% 88%, 50% 72%, 22% 88%, 30% 58%,
+        8% 40%, 33% 35%
+    );
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เพิ่ม transition */
+    animation: float 4s infinite ease-in-out, 
+               spin 6s infinite linear, 
+               glow 1.5s infinite alternate, 
+               orbit 10s infinite ease-in-out, 
+               twinkle 2s infinite alternate;
+    position: relative;
+}
 
-        .puzzle-piece:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px #00f3ff;
-        }
+/* เอฟเฟกต์ลอยขึ้นลง */
+@keyframes float {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-15px);
+    }
+}
 
+/* เอฟเฟกต์หมุนเบาๆ */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(5deg);
+    }
+}
+
+/* เอฟเฟกต์แสงระยิบระยับ */
+@keyframes glow {
+    from {
+        box-shadow: 0 0 20px rgba(255, 165, 0, 0.8);
+    }
+    to {
+        box-shadow: 0 0 35px rgba(255, 200, 0, 1);
+    }
+}
+
+/* เอฟเฟกต์โคจร (เลื่อนซ้าย-ขวาเล็กน้อย) */
+@keyframes orbit {
+    0% {
+        transform: translateX(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateX(10px) rotate(5deg);
+    }
+    100% {
+        transform: translateX(0px) rotate(0deg);
+    }
+}
+
+/* เอฟเฟกต์แสงวิบวับ */
+@keyframes twinkle {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* เพิ่มประกายแสงรอบๆ ดวงดาว */
+.puzzle-piece::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(255, 255, 100, 0.6) 10%, rgba(255, 255, 100, 0) 70%);
+    border-radius: 50%;
+    top: -30px;
+    left: -30px;
+    animation: shimmer 2.5s infinite alternate ease-in-out;
+}
+
+/* เอฟเฟกต์ประกายแสง */
+@keyframes shimmer {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* เอฟเฟกต์เมื่อ hover */
+.puzzle-piece:hover {
+    transform: scale(1.5) rotate(12deg); /* ขยายขนาดและหมุน */
+    box-shadow: 0 0 40px rgba(255, 165, 0, 1);
+}
         /* Modal styling */
         .modal {
             display: none;
@@ -175,14 +266,6 @@ h2 {
             cursor: pointer;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 <body>

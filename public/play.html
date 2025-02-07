@@ -714,6 +714,7 @@ document.getElementById('submit-open-answer').addEventListener('click', () => {
 
 });
 
+
 function loadNextQuestion() {
 currentQuestionIndex++;
 if (currentQuestionIndex < quizzes.length) {
@@ -917,7 +918,7 @@ const playerName = sessionStorage.getItem('name')
 const username = sessionStorage.getItem('username');
 const datePlayed = new Date().toISOString(); // กำหนดค่าของ datePlayed
 const uniqueIdentifier = `${username}-${new Date().getTime()}`; // กำหนดค่าของ uniqueIdentifier
-    
+
 savePlayerScore(playerName, score, username, roomCode, datePlayed, uniqueIdentifier);
 showRocketAndScore(score);
 resetQuiz();

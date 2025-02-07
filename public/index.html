@@ -21,14 +21,17 @@
             background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px cyan;
             width: 100%;
             max-width: 400px;
         }
         .login-container h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #333;
+            font-size: 30px;
+            color: orangered;
+            text-shadow: 3px 3px 6px cyan;
+            
         }
         .form-group {
             margin-bottom: 8px;
@@ -74,7 +77,6 @@
         .link:hover {
             text-decoration: underline;
         }
-
     </style>
 </head>
 <body>
@@ -104,7 +106,7 @@
     </div>
 
     <div class="login-container" id="registerForm" style="display: none;">
-        <h2>Register</h2>
+        <h2>🪪 Register 🌐</h2>
         <form>
             <div class="form-group">
                 <label for="registerType">Register as:</label>
@@ -133,7 +135,7 @@
     </div>
 
     <div class="login-container" id="resetPasswordForm" style="display: none;">
-        <h2>Reset Password</h2>
+        <h2>🤨 Forgot Password 🤔</h2>
         <form>
             <div class="form-group">
                 <label for="resetType">Reset as:</label>
@@ -147,22 +149,19 @@
                 <input type="text" id="resetUsername" placeholder="Enter your username" required>
             </div>
             <div class="form-group">
-                <label for="oldPassword">Old Password:</label>
-                <input type="password" id="oldPassword" placeholder="Enter old password" required>
-            </div>          
-            <div class="form-group">
-                <label for="newPassword">New Password:</label>
-                <input type="password" id="newPassword" placeholder="Enter new password" required>
-            </div>
-            <div class="form-group">
                 <label for="resetEmail">Email:</label>  
                 <input type="email" id="resetEmail" placeholder="Enter your email" required>
             </div>            
           <p><button type="button" class="btn" onclick="sendOTP()">Send OTP</button></p>            
-            <div class="form-group">
+            
+          <div class="form-group" id="resetPasswordBtn" style="display: none;">
                 <label for="otpCode">OTP:</label>
                 <input type="text" id="otpCode" placeholder="Enter OTP sent to your Gmail" required>
             </div>  
+            <div class="form-group" id="newPasswordGroup" style="display: none;">
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" placeholder="Enter new password" required>
+            </div>
                 <button type="button" class="btn" onclick="handlePasswordReset()">Reset Password</button>
 
         <a href="#" class="link" onclick="showLoginForm()">Back to Login</a>
@@ -247,26 +246,25 @@ async function handleRegister() {
     }
 }
     
-        async function handlePasswordReset() {
+async function handlePasswordReset() {
+    const type = document.getElementById('resetType').value;  // ดึงค่า type            
     const username = document.getElementById('resetUsername').value;
-    const oldPassword = document.getElementById('oldPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
     const email = document.getElementById('resetEmail').value
     const otpCode = document.getElementById('otpCode').value;
-    const type = document.getElementById('resetType').value;  // ดึงค่า type
+    const newPassword = document.getElementById('newPassword').value;
 
-    if (!username || !oldPassword || !newPassword || !email || !otpCode || !type) {
+    if (!username || !newPassword || !email || !otpCode || !type) {
         alert('Please fill in all fields: type, username, oldPassword, newPassword, and OTP.');
         return;
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/reset-password`, {
+        const response = await fetch(`${API_BASE_URL}/reset-password2`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ type, username, oldPassword, newPassword,email, otpCode }),
+            body: JSON.stringify({ type, username, newPassword,email, otpCode }),
         });
 
         if (response.ok) {
@@ -303,6 +301,9 @@ async function sendOTP() {
 
         if (response.ok) {
             alert('OTP has been sent to your email.');
+            // แสดงฟิลด์รหัสผ่านใหม่และปุ่มรีเซ็ตรหัสผ่านหลังจาก OTP ถูกส่ง
+            document.getElementById('newPasswordGroup').style.display = 'block';
+            document.getElementById('resetPasswordBtn').style.display = 'block';
         } else {
             const errorText = await response.text();
             alert(`Failed to send OTP: ${errorText}`);
