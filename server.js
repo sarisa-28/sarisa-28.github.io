@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // เชื่อมต่อ MongoDB
-mongoose.connect('mongodb://localhost:27017/CppfinalNewDEMO', {
+mongoose.connect('mongodb+srv://myfewisme:cpp1234@cluster0.vco8v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
 }).then(() => {
     console.log("Connected to MongoDB successfully");
 }).catch((error) => {
@@ -111,7 +111,7 @@ const gameHistorySchema = new mongoose.Schema({
 const GameHistory = mongoose.model('GameHistory', gameHistorySchema);
 
 const corsOptions = {
-    origin: 'http://192.168.1.162:3000', // หรือ URL ที่คุณใช้
+    origin: 'https://sarisa-28-github-io-1.onrender.com', // หรือ URL ที่คุณใช้
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
 };
