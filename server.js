@@ -22,8 +22,6 @@ app.use(express.static('public'));
 
 // เชื่อมต่อ MongoDB
 mongoose.connect('mongodb://localhost:27017/CppfinalNewDEMO', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
 }).then(() => {
     console.log("Connected to MongoDB successfully");
 }).catch((error) => {
@@ -684,7 +682,7 @@ app.post('/add-game-history', async (req, res) => {
 });
 
 // เริ่มเซิร์ฟเวอร์
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, '192.168.1.162', () => {
-    console.log(`Server is running on http://192.168.1.162:${PORT}`);
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
